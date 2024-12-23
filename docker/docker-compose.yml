@@ -1,0 +1,35 @@
+services:
+  core:
+    container_name: customer_service
+    restart: unless-stopped
+    image: dxc/customer-service
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - customer_service_network
+    labels:
+      NAME: "customer_service"
+
+  rabbitmq:
+    container_name: customer_service_rabbit
+    restart: unless-stopped
+    image: rabbitmq:3-management
+    hostname: "rabbitmq"
+    environment:
+      RABBITMQ_DEFAULT_USER: "dxc"
+      RABBITMQ_DEFAULT_PASS: "Admin!"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    networks:
+      - customer_service_network
+    labels:
+      NAME: "customer_service"
+
+networks:
+  customer_service_network:
