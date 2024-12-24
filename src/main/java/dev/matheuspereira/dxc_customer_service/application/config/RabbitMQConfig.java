@@ -16,17 +16,11 @@ public class RabbitMQConfig {
   @Value("${dxc.customer.rabbitmq.exchange}")
   private String exchange;
 
-  @Value("${dxc.customer.rabbitmq.routing_key}")
-  private String routingKey;
+  @Value("${dxc.customer.action.rabbitmq.queue}")
+  private String customerActionQueue;
 
-  @Value("${dxc.customer.rabbitmq.create.queue}")
-  private String customerCreateQueue;
-
-  @Value("${dxc.customer.rabbitmq.update.queue}")
-  private String customerUpdateQueue;
-
-  @Value("${dxc.customer.rabbitmq.delete.queue}")
-  private String customerDeleteQueue;
+  @Value("${dxc.customer.action.rabbitmq.routing_key}")
+  private String customerActionRoutingKey;
 
   @Bean
   TopicExchange exchange() {
@@ -34,20 +28,8 @@ public class RabbitMQConfig {
   }
 
   @Bean
-  Binding bindingCustomerCreate(TopicExchange exchange) {
-    Queue queue = new Queue(customerCreateQueue, true);
-    return BindingBuilder.bind(queue).to(exchange).with(routingKey);
-  }
-
-  @Bean
-  Binding bindingCustomerUpdate(TopicExchange exchange) {
-    Queue queue = new Queue(customerUpdateQueue, true);
-    return BindingBuilder.bind(queue).to(exchange).with(routingKey);
-  }
-
-  @Bean
-  Binding bindingCustomerDelete(TopicExchange exchange) {
-    Queue queue = new Queue(customerDeleteQueue, true);
-    return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+  Binding bindingCustomerAction(TopicExchange exchange) {
+    Queue queue = new Queue(customerActionQueue, true);
+    return BindingBuilder.bind(queue).to(exchange).with(customerActionRoutingKey);
   }
 }

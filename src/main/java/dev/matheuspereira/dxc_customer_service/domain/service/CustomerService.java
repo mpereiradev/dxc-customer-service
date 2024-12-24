@@ -1,6 +1,9 @@
 package dev.matheuspereira.dxc_customer_service.domain.service;
 
+import dev.matheuspereira.dxc_customer_service.domain.model.ActionType;
 import dev.matheuspereira.dxc_customer_service.domain.model.Customer;
+import dev.matheuspereira.dxc_customer_service.domain.model.CustomerAction;
+import dev.matheuspereira.dxc_customer_service.domain.ports.driven.ICustomerActionProducer;
 import dev.matheuspereira.dxc_customer_service.domain.ports.driver.ICustomerService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +15,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomerService implements ICustomerService {
 
+  private final ICustomerActionProducer customerActionProducer;
+
   @Override
   public Customer createCustomerAsync(Customer customer) {
+    customerActionProducer.sendCustomerActionMessage(CustomerAction.builder()
+        .actionType(ActionType.CREATE)
+        .customer(customer)
+        .build());
     return null;
   }
 
