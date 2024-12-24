@@ -5,7 +5,6 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,35 +13,41 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfig {
 
-    @Value("${fluxcred.rabbitmq.loan.approval.queue}")
-    private String loanApprovalQueue;
+  @Value("${dxc.customer.rabbitmq.exchange}")
+  private String exchange;
 
-    @Value("${fluxcred.rabbitmq.loan.approval.routing_key}")
-    private String loanApprovalRoutingKey;
+  @Value("${dxc.customer.rabbitmq.routing_key}")
+  private String routingKey;
 
-    @Value("${fluxcred.rabbitmq.loan.installment.payment.queue}")
-    private String loanInstallmentPaymentQueue;
+  @Value("${dxc.customer.rabbitmq.create.queue}")
+  private String customerCreateQueue;
 
-    @Value("${fluxcred.rabbitmq.loan.installment.payment.routing_key}")
-    private String loanInstallmentPaymentRoutingKey;
+  @Value("${dxc.customer.rabbitmq.update.queue}")
+  private String customerUpdateQueue;
 
-    @Value("${fluxcred.rabbitmq.exchange}")
-    private String exchange;
+  @Value("${dxc.customer.rabbitmq.delete.queue}")
+  private String customerDeleteQueue;
 
-    @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(exchange);
-    }
+  @Bean
+  TopicExchange exchange() {
+    return new TopicExchange(exchange);
+  }
 
-    @Bean
-    Binding bindingLoanApproval(TopicExchange exchange) {
-        Queue queue = new Queue(loanApprovalQueue, true);
-        return BindingBuilder.bind(queue).to(exchange).with(loanApprovalRoutingKey);
-    }
+  @Bean
+  Binding bindingCustomerCreate(TopicExchange exchange) {
+    Queue queue = new Queue(customerCreateQueue, true);
+    return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+  }
 
-    @Bean
-    Binding bindingLoanInstallmentPayment(TopicExchange exchange) {
-        Queue queue = new Queue(loanInstallmentPaymentQueue, true);
-        return BindingBuilder.bind(queue).to(exchange).with(loanInstallmentPaymentRoutingKey);
-    }
+  @Bean
+  Binding bindingCustomerUpdate(TopicExchange exchange) {
+    Queue queue = new Queue(customerUpdateQueue, true);
+    return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+  }
+
+  @Bean
+  Binding bindingCustomerDelete(TopicExchange exchange) {
+    Queue queue = new Queue(customerDeleteQueue, true);
+    return BindingBuilder.bind(queue).to(exchange).with(routingKey);
+  }
 }
